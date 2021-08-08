@@ -65,7 +65,7 @@ struct ContentView: View {
 
     var travel: some View {
         Button(action: {
-            emojis = travelEmojis
+            emojis = travelEmojis.shuffled()
         }, label: {
             VStack {
                 Image(systemName: "airplane")
@@ -78,7 +78,7 @@ struct ContentView: View {
 
     var food: some View {
         Button(action: {
-            emojis = foodEmojis
+            emojis = foodEmojis.shuffled()
         }, label: {
             VStack {
                 Image(systemName: "tray.fill")
@@ -91,7 +91,7 @@ struct ContentView: View {
 
     var sport: some View {
         Button(action: {
-            emojis = sportEmojis
+            emojis = sportEmojis.shuffled()
         }, label: {
             VStack {
                 Image(systemName: "sportscourt.fill")
