@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    var emojis = [
+    @State var emojis = [String]()
+
+    let travelEmojis = [
         "🚜", "🚁", "🚀", "🚅",
         "🚲", "🚎", "🚍", "🛵",
         "🚃", "🚤", "🛸", "🏎",
@@ -16,7 +18,21 @@ struct ContentView: View {
         "✈️", "🛳", "⛵️", "🚂",
         "🚔", "🛴", "🚇", "🛶"
     ]
-    @State var emojiCount = 24
+
+    let foodEmojis = [
+        "🥑", "🍆", "🍅", "🍋",
+        "🍍", "🥥", "🍠", "🧀",
+        "🥝", "🥕", "🥦", "🌶",
+        "🥩", "🍔", "🥐", "🥗",
+        "🥨", "🌮", "🍝", "🍳"
+    ]
+
+    let sportEmojis = [
+        "⛷", "⛹🏼‍♀️", "🏋🏿", "🥋",
+        "🤾🏽‍♀️", "🏌🏻‍♂️", "🪂", "⛸",
+        "🏄🏻‍♀️", "🏂", "🏊🏾", "🏸",
+        "🏒", "🏇🏻", "⚽️", "🎾"
+    ]
 
     var body: some View {
         VStack {
@@ -25,36 +41,85 @@ struct ContentView: View {
                 .padding(.bottom)
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-                    ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
+                    ForEach(emojis, id: \.self) { emoji in
                         CardView(content: emoji)
                             .aspectRatio(2/3, contentMode: .fit)
                     }
                 }
             }
             .foregroundColor(.red)
+            Spacer()
+            HStack {
+                Spacer()
+                travel
+                Spacer()
+                food
+                Spacer()
+                sport
+                Spacer()
+            }
             .font(.largeTitle)
             .padding(.horizontal)
         }
     }
-}
 
-struct CardView: View {
-    var content: String
-    @State var isFaceUp: Bool = true
-
-    var body: some View {
-        ZStack {
-            let shape = RoundedRectangle(cornerRadius: 20)
-            if isFaceUp {
-                shape.fill().foregroundColor(.white)
-                shape.strokeBorder(lineWidth: 3)
-                Text(content).font(.largeTitle)
-            } else {
-                shape.fill()
+    var travel: some View {
+        Button(action: {
+            emojis = travelEmojis
+        }, label: {
+            VStack {
+                Image(systemName: "airplane")
+                    .font(.largeTitle)
+                Text("Travel")
+                    .font(.subheadline)
             }
-        }
-        .onTapGesture {
-            isFaceUp = !isFaceUp
+        })
+    }
+
+    var food: some View {
+        Button(action: {
+            emojis = foodEmojis
+        }, label: {
+            VStack {
+                Image(systemName: "tray.fill")
+                    .font(.largeTitle)
+                Text("Food")
+                    .font(.subheadline)
+            }
+        })
+    }
+
+    var sport: some View {
+        Button(action: {
+            emojis = sportEmojis
+        }, label: {
+            VStack {
+                Image(systemName: "sportscourt.fill")
+                    .font(.largeTitle)
+                Text("Sport")
+                    .font(.subheadline)
+            }
+        })
+    }
+
+    struct CardView: View {
+        var content: String
+        @State var isFaceUp: Bool = true
+
+        var body: some View {
+            ZStack {
+                let shape = RoundedRectangle(cornerRadius: 20)
+                if isFaceUp {
+                    shape.fill().foregroundColor(.white)
+                    shape.strokeBorder(lineWidth: 3)
+                    Text(content).font(.largeTitle)
+                } else {
+                    shape.fill()
+                }
+            }
+            .onTapGesture {
+                isFaceUp = !isFaceUp
+            }
         }
     }
 }
@@ -67,4 +132,3 @@ struct ContentView_Previews: PreviewProvider {
             .preferredColorScheme(.light)
     }
 }
-
