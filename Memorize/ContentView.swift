@@ -8,31 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var emojis = [String]()
-
-    let travelEmojis = [
-        "🚜", "🚁", "🚀", "🚅",
-        "🚲", "🚎", "🚍", "🛵",
-        "🚃", "🚤", "🛸", "🏎",
-        "🚛", "🚟", "🚘", "🚒",
-        "✈️", "🛳", "⛵️", "🚂",
-        "🚔", "🛴", "🚇", "🛶"
-    ]
-
-    let foodEmojis = [
-        "🥑", "🍆", "🍅", "🍋",
-        "🍍", "🥥", "🍠", "🧀",
-        "🥝", "🥕", "🥦", "🌶",
-        "🥩", "🍔", "🥐", "🥗",
-        "🥨", "🌮", "🍝", "🍳"
-    ]
-
-    let sportEmojis = [
-        "⛷", "⛹🏼‍♀️", "🏋🏿", "🥋",
-        "🤾🏽‍♀️", "🏌🏻‍♂️", "🪂", "⛸",
-        "🏄🏻‍♀️", "🏂", "🏊🏾", "🏸",
-        "🏒", "🏇🏻", "⚽️", "🎾"
-    ]
+    @ObservedObject var viewModel: EmojiMemoryGame
 
     var body: some View {
         VStack {
@@ -41,84 +17,35 @@ struct ContentView: View {
                 .padding(.bottom)
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-                    ForEach(emojis, id: \.self) { emoji in
-                        CardView(content: emoji)
+                    ForEach(viewModel.cards) { card in
+                        CardView(card: card)
                             .aspectRatio(2/3, contentMode: .fit)
+                            .onTapGesture {
+                                viewModel.choose(card)
+                            }
                     }
                 }
             }
             .foregroundColor(.red)
-            Spacer()
-            HStack {
-                Spacer()
-                travel
-                Spacer()
-                food
-                Spacer()
-                sport
-                Spacer()
-            }
-            .font(.largeTitle)
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
     }
+}
 
-    var travel: some View {
-        Button(action: {
-            emojis = travelEmojis.shuffled()
-        }, label: {
-            VStack {
-                Image(systemName: "airplane")
-                    .font(.largeTitle)
-                Text("Travel")
-                    .font(.subheadline)
-            }
-        })
-    }
+struct CardView: View {
+    let card: MemoryGame<String>.Card
 
-    var food: some View {
-        Button(action: {
-            emojis = foodEmojis.shuffled()
-        }, label: {
-            VStack {
-                Image(systemName: "tray.fill")
-                    .font(.largeTitle)
-                Text("Food")
-                    .font(.subheadline)
-            }
-        })
-    }
-
-    var sport: some View {
-        Button(action: {
-            emojis = sportEmojis.shuffled()
-        }, label: {
-            VStack {
-                Image(systemName: "sportscourt.fill")
-                    .font(.largeTitle)
-                Text("Sport")
-                    .font(.subheadline)
-            }
-        })
-    }
-
-    struct CardView: View {
-        var content: String
-        @State var isFaceUp: Bool = true
-
-        var body: some View {
-            ZStack {
-                let shape = RoundedRectangle(cornerRadius: 20)
-                if isFaceUp {
-                    shape.fill().foregroundColor(.white)
-                    shape.strokeBorder(lineWidth: 3)
-                    Text(content).font(.largeTitle)
-                } else {
-                    shape.fill()
-                }
-            }
-            .onTapGesture {
-                isFaceUp = !isFaceUp
+    var body: some View {
+        ZStack {
+            let shape = RoundedRectangle(cornerRadius: 20)
+            if card.isFaceUp {
+                shape.fill().foregroundColor(.white)
+                shape.strokeBorder(lineWidth: 3)
+                Text(card.content).font(.largeTitle)
+            } else if card.isMatched {
+                shape.opacity(0)
+            } else {
+                shape.fill()
             }
         }
     }
@@ -126,9 +53,10 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        let game = EmojiMemoryGame()
+        ContentView(viewModel: game)
             .preferredColorScheme(.dark)
-        ContentView()
+        ContentView(viewModel: game)
             .preferredColorScheme(.light)
     }
 }
