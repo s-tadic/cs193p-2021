@@ -19,6 +19,10 @@ extension EmojiMemoryGameTheme {
         [travel, food, sport, flag, symbol, object]
     }
 
+    static var random: Self {
+        allThemes.randomElement() ?? .travel
+    }
+
     static var travel: Self {
         .init(
             name: "travel",
