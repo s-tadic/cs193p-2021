@@ -18,6 +18,7 @@ struct ContentView: View {
             Button("New game") {
                 viewModel.startNewGame()
             }
+            Text(viewModel.themeName)
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
                     ForEach(viewModel.cards) { card in
